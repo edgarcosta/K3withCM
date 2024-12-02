@@ -4,7 +4,10 @@ intrinsic FactorIntoLinear(f::RngMPolElt) -> SeqEnum[RngMPolElt]
   if #res eq Degree(f) then // factors completely over ground field
     return res;
   end if;
-  OL := BaseRing(Parent(f));
+  Pf := Parent(f);
+  require Rank(Pf) eq 3 : "Argument 1 must be over a polynomial ring with rank = 3";
+  P2 := ProjectiveSpace(Pf);
+  OL := BaseRing(Pf);
   L := OL;
   if IsIsomorphic(OL, RationalsAsNumberField()) then
     L := RationalsAsNumberField();
