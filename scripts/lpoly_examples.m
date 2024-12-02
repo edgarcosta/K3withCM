@@ -1,6 +1,11 @@
 SetColumns(0); SetAutoColumns(false);
 example, p := Explode(GetScriptArguments()); // to be run with magma -I
-if [example, p] in [Split(elt, ":")[1..2] : elt in Split(Read("scripts/examples.txt"),"\n")] then
+try
+  known := [Split(elt, ":")[1..2] : elt in Split(Read("examples.txt"),"\n")];
+catch e
+  known := [];
+end try;
+if [example, p] in known then
   exit; //nothing to do
 end if;
 example := StringToInteger(example);
