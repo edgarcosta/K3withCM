@@ -24,6 +24,33 @@ intrinsic FactorIntoLinear(f::RngMPolElt) -> SeqEnum[RngMPolElt]
   return res;
 end intrinsic;
 
+intrinsic BadPrimesOfDegree2K3Surface(f::RngMPolElt) -> SeqEnum[RngInt]
+ {return the primes for which the surface w^2 = f(x,y,z) has more than ADE singularities}
+  R := Generic(Parent(f));
+  // maybe this would all work over a Dedekind domain
+  require
+    (BaseRing(R) cmpeq Integers()) and
+    (Rank(R) eq 3) and
+    (VariableWeights(R) eq [1,1,1]) and
+    IsHomogeneous(f) and
+    (TotalDegree(f) eq 6)
+    :
+    "Argument 1 must be a homogeneous degree 6 polynomial in a uniweighted 3-variable polynomial ring over the integers";
+  K := FieldOfFractions(BaseRing(R));
+  P2 := ProjectiveSpace(R);
+  require Degree(ChangeRing(SingularSubscheme(Scheme(P2, f)), K)) eq 15 : "Argument 1 must be a product of linear factors over the algebraic closure";
+  R2 := PolynomialRing(Integers(), 2);
+  res := {};
+  for v in [1..3] do
+    fv := hom<R -> R2 | [i eq v select 1 else R2.(i mod 2 + 1) : i in [1..3]]>(f);
+    ss := SingularSubscheme(Scheme(AffineSpace(R2), fv));
+    SS := SingularSubscheme(ss);
+    GB := GroebnerBasis(Ideal(SS));
+    res join:=SequenceToSet(PrimeDivisors(Integers()!GB[#GB]));
+  end for;
+  return res;
+end intrinsic;
+
 
 
 intrinsic HyperplaneToPoint(h::Sch) -> Pt
