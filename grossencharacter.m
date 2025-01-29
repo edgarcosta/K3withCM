@@ -88,7 +88,7 @@ function filter_integral(chis, ps)
         for p in ps do
             efz := EulerFactor(chi, p : Integral:=true);
             ef := EulerFactor(chi, p : Integral:=false, Precision:=500);
-            if Max([Abs(c) : c in Coefficients(efz - ef)]) gt 10^-100 then
+            if efz - ef ne 0 and Max([Abs(c) : c in Coefficients(efz - ef)]) gt 10^-100 then
                 continue chi;
             end if;
         end for;
@@ -145,7 +145,17 @@ function galois_conjugate_ootypes(K)
     return func<oo | [permoo(oo, p) : p in GRR]>, func<oo | [permoo(oo, p) : p in GCC]>;
 end function;
 
-function possible_infinity_types(K, ootype)
+function possible_infinity_types(ootype)
+    // there must be a smarter way to do this
+    ootype_to_mset := func<ootype | {* {* x : x in t *} : t in ootype *}>;
+    mset := ootype_to_mset(ootype);
+    possibilities := ootype;
+    possibilities cat:=[[elt[2], elt[1]] : elt in ootype | elt[2] ne elt[1]];
+    return { [x : x in elt] : elt in CartesianPower(possibilities, #ootype) | ootype_to_mset(elt) eq mset };
+end function;
+
+
+function possible_infinity_types_old(K, ootype)
     // there must be a smarter way to do this
     ootype_to_mset := func<ootype | {* {* x : x in t *} : t in ootype *}>;
     mset := ootype_to_mset(ootype);
@@ -176,9 +186,7 @@ function possible_GC(K, conductor_support, ootype)
     // we want all the characters with the same modulus
     time psis := possible_hecke_characters(K, conductor_support);
     N := Universe(psis)`Modulus;
-    "#chis = ", #psis;
     oo4, oo2, ooall := possible_infinity_types(K, ootype);
-    #oo4, #oo2, #ooall;
     dirich := AssociativeArray();
     for oo in ooall do
         if not check_1modI_is_OK(N, oo) then continue; end if;
@@ -208,6 +216,34 @@ function match_GC(K, conductor_support, ootype, euler_factors)
     return GCS;
 end function;
 
+// two Grossencharacters give the same L-function iff their Galois signatures match
+function GaloisSignature(psi)
+    N, oo := Modulus(psi);
+    K := NumberField(Order(N));
+    //if H`issubgroup then H:=H`ambient; end if;
+    R, RtoI := RayClassGroup(N, oo);
+    // generator representatives of the ray class group
+    gens := [RtoI(g) : g in Generators(R)];
+    G, A, toA := AutomorphismGroup(K);
+    return <N, oo, {[ <a,b,c> where a,b,c := RawEval(toA(g)(gen), psi) : gen in gens] : g in G}>;
+end function;
+
+// two Grossencharacters give the same L-function iff their Galois signatures match
+// it fails at the moment for trivial character, as we 
+function GaloisSignatureCC(psi)
+    N, oo := Modulus(psi);
+    K := NumberField(Order(N));
+    //if H`issubgroup then H:=H`ambient; end if;
+    R, RtoI := RayClassGroup(N, oo);
+    // generator representatives of the ray class group
+    gens := [RtoI(g) : g in Generators(R)];
+    G, A, toA := AutomorphismGroup(K);
+    return <N,
+            oo,
+            {[ ComplexField(500) |  '@'(toA(g)(gen), psi : Precision:=1000) : gen in gens ] : g in G}
+            >;
+end function;
 
 // TODO a parallel version that checks for matching in parallel
 // i.e., parallelizes on the hecke characters
+
