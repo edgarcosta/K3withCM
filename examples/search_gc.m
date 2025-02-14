@@ -18,8 +18,11 @@ else
   jobs := 12;
 end if;
 
-
-verbose:=assigned verbose;
+if assigned verbose then
+  verbose := StringToInteger(verbose);
+else
+  verbose := 1;
+end if;
 
 GCs := function ()
 
@@ -30,17 +33,17 @@ if "X" in psi_target then
     if not i in target then continue; end if;
     K := Ks[i];
     c := ConductorBoundRationalHeckeCharacters(K, badps[i]);
-    if verbose then "i=", i, ", Conductor bound: for psi_X", fac(c); end if;
+    if verbose ge 1 then "i=", i, ", Conductor bound: for psi_X", fac(c); end if;
     ef := [<p, euler_factor_X(X, p)> : p in PrimesUpTo(200) | not p in badps[i] and #Factorization(p*Integers(K)) eq Degree(K)];
     matches := [];
     for d in Divisors(c) do
       psis := RationalHeckeCharacters(HeckeCharacterGroup(d));
-      if verbose then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
+      if verbose ge 2 then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
       match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs);
       matches cat:= match;
-      if #match gt 0 and verbose then "i=", i, "found ", #match, "character(s)"; end if;
+      if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
     end for;
-    if verbose then "i=", i, ",", #matches, " match(es) for psi_X of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
+    if verbose ge 1 then "i=", i, ",", #matches, " match(es) for psi_X of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
     GCs_X[i] := matches;
   end for;
 end if;
@@ -52,18 +55,18 @@ if "A" in psi_target then
     if not i in target then continue; end if;
     K := Ks[i];
     c := ConductorBoundRationalHeckeCharacters(K, badpsC[i]);
-    if verbose then "i=", i, ", Conductor bound: for psi_A", fac(c); end if;
+    if verbose ge 1 then "i=", i, ", Conductor bound: for psi_A", fac(c); end if;
     badpmodel := PrimeDivisors(Integers()!Discriminant(C));
     ef := [<p, EulerFactor(C, p)> : p in PrimesUpTo(200) | not p in badpmodel and #Factorization(p*Integers(K)) eq Degree(K)];
     matches := [];
     for d in Divisors(c) do
       psis := RationalHeckeCharacters(HeckeCharacterGroup(d));
-      if verbose then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
+      if verbose ge 2 then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
       match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs);
       matches cat:= match;
-      if #match gt 0 and verbose then "i=", i, "found ", #match, "character(s)"; end if;
+      if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
     end for;
-    if verbose then "i=", i, ",", #matches, " match(es) for psi_A of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
+    if verbose ge 1 then "i=", i, ",", #matches, " match(es) for psi_A of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
     GCs_A[i] := matches;
   end for;
 end if;
