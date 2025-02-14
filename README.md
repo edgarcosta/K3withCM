@@ -53,7 +53,7 @@ Some of these searches take a long time, so we suggest to run them with many job
 Here is an example of searching for psi_X for the first example:
 
 ```
-time magma -b verbose:= target:=1 psi:=X jobs:=1 < examples/search_gc.m
+time magma -b verbose:=2 target:=1 psi:=X jobs:=1 < examples/search_gc.m
 Loading "examples/data.m"
 i= 1 , Conductor bound: for psi_X [<"8.1",7>,<"9.1",1>]
 i= 1 trying d= [] #psis= 1
@@ -75,4 +75,27 @@ i= 1 trying d= [<"8.1",6>,<"9.1",1>] #psis= 272
 i= 1 trying d= [<"8.1",7>,<"9.1",1>] #psis= 528
 i= 1 , 1  match(es) for psi_X of conductor [<"8.1",2>]
 magma -b verbose:= target:=1 psi:=X jobs:=1 < examples/search_gc.m  80.70s user 0.98s system 99% cpu 1:21.69 total
+```
+
+
+
+```
+for i in {1..4}; do /usr/bin/time magma -b verbose:=1 target:=$i psi:=A jobs:=512 < examples/search_gc.m ; done
+Loading "examples/data.m"
+i= 1 , Conductor bound: for psi_A [<"8.1",7>,<"9.1",1>]
+i= 1 , 1  match(es) for psi_A of conductor [<"8.1",4>]
+133.05user 12.83system 0:13.64elapsed 1069%CPU (0avgtext+0avgdata 61072maxresident)k
+0inputs+10448outputs (0major+2070336minor)pagefaults 0swaps
+Loading "examples/data.m"
+i= 2 , Conductor bound: for psi_A [<"8.1",7>,<"49.1",1>]
+i= 2 , 1  match(es) for psi_A of conductor [<"8.1",3>,<"49.1",1>]
+139.95user 13.06system 0:12.40elapsed 1233%CPU (0avgtext+0avgdata 56692maxresident)k
+0inputs+10464outputs (0major+2183451minor)pagefaults 0swaps
+Loading "examples/data.m"
+i= 3 , Conductor bound: for psi_A [<"8.1",7>,<"361.1",1>]
+i= 3 , 1  match(es) for psi_A of conductor [<"8.1",3>,<"361.1",1>]
+398.78user 11.95system 0:17.09elapsed 2402%CPU (0avgtext+0avgdata 43380maxresident)k
+0inputs+10448outputs (0major+2135937minor)pagefaults 0swaps
+Loading "examples/data.m"
+i= 4 , Conductor bound: for psi_A [<"2.1",7>,<"2.2",7>,<"2.3",7>,<"961.1",1>]
 ```
