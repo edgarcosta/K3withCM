@@ -1,6 +1,6 @@
 # K3withCM
 
-
+This depends on several utils available in [CHIMP](https://github.com/edgarcosta/CHIMP), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
 
 # Constructing the quasi-characters and associated L-functions
 

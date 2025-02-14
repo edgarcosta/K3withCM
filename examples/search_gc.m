@@ -1,3 +1,6 @@
+// for better printing
+SetColumns(0);
+SetAutoColumns(false);
 load "examples/data.m";
 if assigned target then
   target := [ StringToInteger(target) ];
