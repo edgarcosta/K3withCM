@@ -1,4 +1,4 @@
-load "data.m";
+load "examples/data.m";
 if assigned target then
   target := [ StringToInteger(target) ];
 else
@@ -14,6 +14,7 @@ if assigned jobs then
 else
   jobs := 12;
 end if;
+
 
 verbose:=assigned verbose;
 
@@ -67,3 +68,4 @@ end if;
 
 return [GCs_X, GCs_A];
 end function();
+exit;

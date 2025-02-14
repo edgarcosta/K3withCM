@@ -29,7 +29,7 @@ Cs := [HyperellipticCurve(elt): elt in
 ];
 
 
-badps := [BadPrimesOfDegree2K3Surface(X) : X in Xs];
+badps := [BadPrimesOfDegree2K3Surface(X) : X in Xs] cat [{}];
 //badpsC := [SequenceToSet(PrimeDivisors(Integers()!Conductor(C))) : C in Cs];
 badpsC := [{2, 3}, {2, 7}, {2, 19}, {2, 31}]; // just to avoid the annoying warning
 ps := [17,13,37,29];
