@@ -1,6 +1,6 @@
 import !"Ring/FldNum/grossenchar.m" : check_1modI_is_OK, make_grossencharacter, get_chi, IsCMField, ensure_field;
 declare attributes FldNum: MatchGaloisWithRootsandootypes;
-
+declare verbose GCSearch, 2;
 
 function MatchGaloisWithRootsandootypes(K)
   if not assigned K`MatchGaloisWithRootsandootypes then
@@ -147,27 +147,72 @@ intrinsic ConductorBoundRationalHeckeCharacters(K::FldNum, Support::SetEnum) -> 
 end intrinsic;
 
 
+function is_primitive_abstract_generic(CG)
+  assert Type(CG) in [GrpDrchNF, GrpHecke];
+  constructor := Type(CG) eq GrpDrchNF select DirichletGroup else HeckeCharacterGroup;
+  N, oo := Modulus(CG);
+  max_divs := [ <N/elt[1], oo> : elt in Factorization(N)] cat [ <N, [t : i->t in oo | i ne j]> : j in [1..#oo]];
+  max_subgps := [Extend(constructor(elt[1], elt[2]), CG) : elt in max_divs];
+  return function(g)
+      return forall(notused){1 : G in max_subgps | not g in G`AbGrp};
+  end function;
+end function;
 
-intrinsic RationalHeckeCharacters(H::GrpHecke :  UpToGalois:=true) -> SeqEnum[GrpHeckeElt]
-  { returns the all the Hecke characters chi such that its values lie in a subfield of K }
-  K := NumberField(Order(Modulus(H)));
-  ntor := #TorsionSubgroup(UnitGroup(K));
-  G, GtoH := AbelianGroup(H);
+intrinsic IsPrimitiveAbstract(H::GrpHecke) -> UserProgram
+{ return a function that replicates IsPrimitive on the abstract abelian group}
+  return is_primitive_abstract_generic(H);
+end intrinsic;
 
-  // the subgroup such that chi image is contained in K
-  S, StoG := sub<G | [(Order(g) div GCD(ntor, Order(g)))*g : g in Generators(G)]>;
+intrinsic IsPrimitiveAbstract(D::GrpDrchNF) -> UserProgram
+{ " } //"
+  return is_primitive_abstract_generic(D);
+end intrinsic;
 
+
+// elements of the abelian group that have order dividing O
+function bounded_order_subgroup(G, O)
+  return sub<G | [(Order(g) div GCD(O, Order(g)))*g : g in Generators(G)]>;
+end function;
+
+function rational_characters_abstract(C, O, UpToGalois)
+  // the subgroup, as an abstract abelian group, such that chi image is contained in K
+  S, StoG := bounded_order_subgroup(C, O);
   if not UpToGalois then
-    res := [GtoH(StoG(g)) : g in S];
+    res := [StoG(g) : g in S];
   else
     n := Exponent(AbelianGroup(S));
     coprime_to_n := [m : m in [1 .. n] | IsCoprime(m, n)];
     // this seems to be faster than trying to be smart
     Selts_up_to_galois := {{k*g : k in coprime_to_n} : g in S};
-    res := [GtoH(StoG(Rep(g))) : g in Selts_up_to_galois];
+    res := [StoG(Rep(g)) : g in Selts_up_to_galois];
   end if;
   return res;
+end function;
+
+function rational_characters(CG, UpToGalois, Abstract)
+  ntor := #TorsionUnitGroup(K) where K := NumberField(Order(Modulus(CG)));
+  G, GtoH := AbelianGroup(CG);
+  resG := rational_characters_abstract(G, ntor, UpToGalois);
+  if Abstract then
+    return resG;
+  else
+    return [GtoH(g) : g in resG];
+  end if;
+end function;
+
+
+
+
+intrinsic RationalHeckeCharacters(H::GrpHecke :  UpToGalois:=false, Abstract:=false) -> SeqEnum[GrpHeckeElt]
+  { returns the all the characters chi such that its values lie in a subfield of K }
+  return rational_characters(H, UpToGalois, Abstract);
 end intrinsic;
+
+intrinsic RationalDirichletCharacters(D::GrpDrchNF :  UpToGalois:=false, Abstract:=false) -> SeqEnum[GrpDrchNFElt]
+  { " } //"
+  return rational_characters(D, UpToGalois, Abstract);
+end intrinsic;
+
 
 
 
@@ -196,8 +241,8 @@ intrinsic GrossencharacterSearch(
   assert #Set([&+t : t in ootype]) eq 1; // "All oo-type parts must have same weight";
   ensure_field(K);
 
-  //psis := RationalHeckeCharacters(K, Support : UpToGalois:=UpToGalois);
   ooall := possible_infinity_types(ootype);
+  vprintf GCSearch, 2: "#psis = %o #ooall = %o\n", #psis, #ooall;
   dirich := AssociativeArray();
   DG:=DirichletGroup(N,[]);
   for oo in ooall do
@@ -235,15 +280,100 @@ intrinsic GrossencharacterSearch(
   end if;
 
   gcs := [make_grossencharacter(dirich[oo], psi, N, &+oo[1], oo) :  oo in valid_oo[i], i->psi in psis];
+  // filter by integrality
+  gcs := [g : g in gcs | EulerFactorsIntegralityCheck(g, PrimesUpTo(B))];
+  vprintf GCSearch, 2: "#matches = %o\n", #gcs;
   if UpToGalois then
-    signatures := [GaloisSignatureRational(g) : g in gcs | EulerFactorsIntegralityCheck(g, PrimesUpTo(B)) ];
+    signatures := [GaloisSignatureRational(g) : g in gcs ];
     gcs := [gcs[i] : i in {Index(signatures, sig) : sig in signatures}];
+    vprintf GCSearch, 2: "#matches up to Galois = %o\n", #gcs;
   end if;
   return gcs;
 end intrinsic;
 
 
+intrinsic CandidateRationalGrossenCharacters(N::RngOrdIdl, ootype::SeqEnum[SeqEnum[RngIntElt]]: Primitive:=true) -> SeqEnum[GrossenChar]
+{ Return all the Grossencharacters such that Q(Restriction(gr`hecke)/gr`dirich) < K }
+  K := NumberField(Order(N));
+  ensure_field(K);
+  // call internal functions to avoid try/catch
+  if not check_1modI_is_OK(N, ootype) then return []; end if;
+  b, chi0 := get_chi(N, ootype);
+  if not b then return []; end if;
+  HG := HeckeCharacterGroup(N, []);
+  HGAb, toHG := AbelianGroup(HG);
+  DG := DirichletGroup(N, []);
+  DGAb, toDG := AbelianGroup(DG);
 
+  toHGAb := hom<HG -> HGAb | x:->HGAb!Eltseq(x)>;
+  toDGAb := hom<DG -> DGAb | x:->DGAb!Eltseq(x)>;
+  // chi0 by default is in the subgroup of DG generated by itself
+  chi0_ab := DGAb ! Eltseq(DG!chi0);
+  UGAb := AbelianGroup(UnitTrivialSubgroup(DG));
+  // the line below is equivalent to Grossencharacter(HG.0, ootype)
+  // but this skips over check_1modI_is_OK and get_chi, which were done above
+  // and creates the principal quasi-character
+  psi_princ := make_grossencharacter(chi0, HG.0, N, &+ootype[1], ootype);
+
+  // compute the Dirichlet characters chi/chi0 such that Q(chi/chi0) < K
+  ntor := #TorsionUnitGroup(K);
+  // rational_characters_abstract gives us the sequence of characters {chi' = chi/chi0} such that Order(chi') | ntor in DGAb
+  // we don't want chi' to up to galois, as we also need to consider the action on chi0
+  // we further want:
+  // - chi to be liftable to a Hecke character, i.e., chi is trivial on the units 
+  // - (If Primitive) chi' = chi/chi0 to be primitive, as this is equivalent that the quasi-character is also primitive
+  filter := Primitive select IsPrimitiveAbstract(DG) else func<x | true>;
+  chis := [chiprime*chi0_ab : chiprime in rational_characters_abstract(DGAb, ntor, false) | filter(chiprime) and chiprime*chi0_ab in UGAb];
+
+  // we now lift the chis, by looping over the preimages of the restriction
+  restriction := hom<HGAb -> DGAb | [<toHGAb(g), toDGAb(DG!DirichletRestriction(g))> : g in Generators(HG)]>;
+  HCelts := [HGAb | g : g in AbelianGroup(HilbertCharacterSubgroup(HG)) ];
+  // equivalent to psi0s := &cat[ [HG | psi*toHG(elt) :  elt in HCelts] where psi := HeckeLift(toDG(chi)) : chi in chis];
+  psi0s := [HG | toHG(psi*elt) :  elt in HCelts, psi in chis @@ restriction];
+  // we now twist by the Hecke characters
+  return [psi_princ*psi0 : psi0 in psi0s ];
+end intrinsic;
+
+
+intrinsic GrossencharacterSearch(
+  N::RngOrdIdl,
+  ootype::SeqEnum[SeqEnum[RngIntElt]],
+  euler_factors::SeqEnum[Tup]
+  : UpToGalois:=true, Primitive:=true, Jobs:=1, B:=100) -> SeqEnum[GrpHeckeElt]
+{ Given a list of }
+  ooall := possible_infinity_types(ootype);
+
+  psis := &cat[ CandidateRationalGrossenCharacters(N, oo : Primitive:=Primitive) : oo in ooall];
+  vprintf GCSearch, 2: "#psis = %o\n", #psis;
+
+  function match_psi(psi)
+    return not exists(notused){ 1 : elt in euler_factors |
+        EulerFactor(psi, p : Integral:=true) ne ef where p, ef := Explode(elt)};
+  end function;
+
+
+  b, p := IsIntrinsic("ParallelCall");
+  if b and Jobs gt 1 then
+    // The function block is necessary to prevent Magma from getting confused when forking
+    out := function ()
+      return p(Jobs, match_psi, [<psi> : psi in psis], 1);
+    end function();
+    assert &and[elt[1] : elt in out];
+    res := [elt[2,1] : elt in out];
+  else
+    res := [match_psi(psi) : psi in psis];
+  end if;
+
+  // filter by match and integrality
+  gcs := [psi : i->psi in psis | res[i] and EulerFactorsIntegralityCheck(psi, PrimesUpTo(B))];
+  vprintf GCSearch, 2: "#matches = %o\n", #gcs;
+  if UpToGalois then
+    signatures := [GaloisSignatureRational(g) : g in gcs ];
+    gcs := [gcs[i] : i in {Index(signatures, sig) : sig in signatures}];
+    vprintf GCSearch, 2: "#matches up to Galois = %o\n", #gcs;
+  end if;
+  return gcs;
+end intrinsic;
 
 
 /*
