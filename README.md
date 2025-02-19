@@ -32,14 +32,12 @@ magma -b examples/construct_gc.m  27.39s user 2.22s system 163% cpu 18.123 total
 
 ## We can also verify that the L-functions match up to some bound
 ```
-time magma -b examples/check_gc.m
+echo "time check_construct(1000);" | time magma -b  examples/check_gc.m
 Loading "examples/construct_gc.m"
 Loading "examples/data.m"
-> time check_construct(1000);
 true
-Time: 5.990
->
-magma -b examples/check_gc.m  57.16s user 1.37s system 135% cpu 43.320 total
+Time: 6.070
+magma -b examples/check_gc.m  31.47s user 1.59s system 141% cpu 23.313 total
 ```
 
 

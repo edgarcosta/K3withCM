@@ -20,7 +20,7 @@ GCs, Ls := function ()
   for i->c in conductorsX do
     if not i in target then continue; end if;
     match := GrossencharacterSearch(c, oo, efX[i] : Jobs:=jobs);
-    // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c)), oo, efX[i] : Jobs:=jobs);
+    // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c) : UpToGalois:=true), oo, efX[i] : Jobs:=jobs);
     assert #match eq 1;
     GCs_X[i] := match[1];
   end for;
@@ -31,7 +31,7 @@ GCs, Ls := function ()
   for i->c in conductorsC do
       if not i in target then continue; end if;
       match := GrossencharacterSearch(c, oo, efC[i] : Jobs:=jobs);
-      // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c)), oo, efC[i] : Jobs:=jobs);
+      // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c) : UpToGalois:=true), oo, efC[i] : Jobs:=jobs);
       assert #match eq 1;
       GCs_A[i] := match[1];
   end for;
@@ -44,7 +44,7 @@ GCs, Ls := function ()
     c := 1*Integers(K);
     match := GrossencharacterSearch(c, oo, efPrime[i] : Jobs:=jobs);
     assert #match eq 1;
-    // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c)), oo, efPrime[i] : Jobs:=jobs);
+    // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c) : UpToGalois:=true), oo, efPrime[i] : Jobs:=jobs);
     assert #match eq 1;
     GCs_prime[i] := match[1];
   end for;

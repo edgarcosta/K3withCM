@@ -21,8 +21,9 @@ end if;
 if assigned verbose then
   verbose := StringToInteger(verbose);
 else
-  verbose := 1;
+  verbose := 0;
 end if;
+SetVerbose("GCSearch", verbose);
 
 GCs := function ()
 
@@ -37,9 +38,10 @@ if "X" in psi_target then
     ef := [<p, euler_factor_X(X, p)> : p in PrimesUpTo(200) | not p in badps[i] and #Factorization(p*Integers(K)) eq Degree(K)];
     matches := [];
     for d in Divisors(c) do
-      psis := RationalHeckeCharacters(HeckeCharacterGroup(d));
-      if verbose ge 2 then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
-      match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs);
+      if verbose ge 2 then "i=", i, "trying d=", fac(d); end if;
+      match := GrossencharacterSearch(d, oo, ef : Jobs:=jobs);
+      //match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs) where psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
+
       matches cat:= match;
       if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
     end for;
@@ -60,9 +62,10 @@ if "A" in psi_target then
     ef := [<p, EulerFactor(C, p)> : p in PrimesUpTo(200) | not p in badpmodel and #Factorization(p*Integers(K)) eq Degree(K)];
     matches := [];
     for d in Divisors(c) do
-      psis := RationalHeckeCharacters(HeckeCharacterGroup(d));
-      if verbose ge 2 then "i=", i, "trying d=", fac(d), "#psis=", #psis; end if;
-      match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs);
+      psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
+      if verbose ge 2 then "i=", i, "trying d=", fac(d); end if;
+      match := GrossencharacterSearch(d, oo, ef : Jobs:=jobs);
+      //match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs) where psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
       matches cat:= match;
       if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
     end for;
