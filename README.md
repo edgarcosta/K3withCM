@@ -10,24 +10,24 @@ Loading "examples/data.m"
 [
 [
 Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair (1,$.1) with modulus of norm 64 over Number Field with defining polynomial x^6 + 6*x^4 + 9*x^2 + 1 over the Rational Field,
-Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.3^4,$.1) with modulus of norm 3136 over Number Field with defining polynomial x^6 + 5*x^4 + 6*x^2 + 1 over the Rational Field,
-Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.3^30,$.1) with modulus of norm 23104 over Number Field with defining polynomial x^6 + 13*x^4 + 50*x^2 + 49 over the Rational Field,
-Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.1*$.2^2*$.3^80,$.1) with modulus of norm 61504 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
+Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.1,$.1) with modulus of norm 3136 over Number Field with defining polynomial x^6 + 5*x^4 + 6*x^2 + 1 over the Rational Field,
+Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.1,$.1) with modulus of norm 23104 over Number Field with defining polynomial x^6 + 13*x^4 + 50*x^2 + 49 over the Rational Field,
+Grossencharacter of type [[ 2, 0 ],[ 1, 1 ],[ 1, 1 ]] for Hecke-Dirichlet pair ($.1^3,$.1) with modulus of norm 61504 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
 ],
 [
-Grossencharacter of type [[ 0, 1 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1*$.3^2,$.1^3) with modulus of norm 4096 over Number Field with defining polynomial x^6 + 6*x^4 + 9*x^2 + 1 over the Rational Field,
-Grossencharacter of type [[ 1, 0 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1*$.2*$.3^4,$.1) with modulus of norm 25088 over Number Field with defining polynomial x^6 + 5*x^4 + 6*x^2 + 1 over the Rational Field,
-Grossencharacter of type [[ 0, 1 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1*$.3^30,$.1) with modulus of norm 184832 over Number Field with defining polynomial x^6 + 13*x^4 + 50*x^2 + 49 over the Rational Field,
-Grossencharacter of type [[ 1, 0 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1*$.3*$.4^2*$.5*$.6^240,$.1) with modulus of norm 3936256 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
+Grossencharacter of type [[ 0, 1 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1,$.1^3) with modulus of norm 4096 over Number Field with defining polynomial x^6 + 6*x^4 + 9*x^2 + 1 over the Rational Field,
+Grossencharacter of type [[ 1, 0 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1^3,$.1) with modulus of norm 25088 over Number Field with defining polynomial x^6 + 5*x^4 + 6*x^2 + 1 over the Rational Field,
+Grossencharacter of type [[ 0, 1 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1,$.1) with modulus of norm 184832 over Number Field with defining polynomial x^6 + 13*x^4 + 50*x^2 + 49 over the Rational Field,
+Grossencharacter of type [[ 1, 0 ],[ 1, 0 ],[ 0, 1 ]] for Hecke-Dirichlet pair ($.1^3,$.1) with modulus of norm 3936256 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
 ],
 [
 Grossencharacter of type [[ 0, 2 ],[ 2, 0 ],[ 1, 1 ]] for Hecke-Dirichlet pair (1,1) with modulus of norm 1 over Number Field with defining polynomial x^6 + 6*x^4 + 9*x^2 + 1 over the Rational Field,
 Grossencharacter of type [[ 1, 1 ],[ 0, 2 ],[ 0, 2 ]] for Hecke-Dirichlet pair (1,1) with modulus of norm 1 over Number Field with defining polynomial x^6 + 5*x^4 + 6*x^2 + 1 over the Rational Field,
 Grossencharacter of type [[ 0, 2 ],[ 2, 0 ],[ 1, 1 ]] for Hecke-Dirichlet pair (1,1) with modulus of norm 1 over Number Field with defining polynomial x^6 + 13*x^4 + 50*x^2 + 49 over the Rational Field,
-Grossencharacter of type [[ 1, 1 ],[ 0, 2 ],[ 0, 2 ]] for Hecke-Dirichlet pair ($.2,1) with modulus of norm 1 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
+Grossencharacter of type [[ 1, 1 ],[ 0, 2 ],[ 0, 2 ]] for Hecke-Dirichlet pair (1,1) with modulus of norm 1 over Number Field with defining polynomial x^6 + 21*x^4 + 116*x^2 + 64 over the Rational Field
 ]
 ]
-magma -b examples/construct_gc.m  27.39s user 2.22s system 163% cpu 18.123 total
+magma -b examples/construct_gc.m  36.04s user 1.40s system 250% cpu 14.938 total
 ```
 
 ## We can also verify that the L-functions match up to some bound
@@ -36,8 +36,8 @@ echo "time check_construct(1000);" | time magma -b  examples/check_gc.m
 Loading "examples/construct_gc.m"
 Loading "examples/data.m"
 true
-Time: 6.070
-magma -b examples/check_gc.m  31.47s user 1.59s system 141% cpu 23.313 total
+Time: 6.510
+magma -b examples/check_gc.m  45.74s user 1.41s system 212% cpu 22.212 total
 ```
 
 
@@ -52,25 +52,12 @@ Here is an example of searching for psi_X for the first example:
 time magma -b verbose:=2 target:=1 psi:=X jobs:=1 < examples/search_gc.m
 Loading "examples/data.m"
 i= 1 , Conductor bound: for psi_X [<"8.1",7>,<"9.1",1>]
-i= 1 trying d= [] #psis= 1
-i= 1 trying d= [<"8.1",1>] #psis= 1
-i= 1 trying d= [<"8.1",2>] #psis= 4
-i= 1 found  1 character(s)
-i= 1 trying d= [<"8.1",3>] #psis= 4
-i= 1 trying d= [<"8.1",4>] #psis= 20
-i= 1 trying d= [<"8.1",5>] #psis= 40
-i= 1 trying d= [<"8.1",6>] #psis= 72
-i= 1 trying d= [<"8.1",7>] #psis= 136
-i= 1 trying d= [<"9.1",1>] #psis= 2
-i= 1 trying d= [<"8.1",1>,<"9.1",1>] #psis= 2
-i= 1 trying d= [<"8.1",2>,<"9.1",1>] #psis= 12
-i= 1 trying d= [<"8.1",3>,<"9.1",1>] #psis= 12
-i= 1 trying d= [<"8.1",4>,<"9.1",1>] #psis= 72
-i= 1 trying d= [<"8.1",5>,<"9.1",1>] #psis= 144
-i= 1 trying d= [<"8.1",6>,<"9.1",1>] #psis= 272
-i= 1 trying d= [<"8.1",7>,<"9.1",1>] #psis= 528
+Assembling candidates list...Time: 6.670
+#psis = 6144
+#matches = 6
+#matches up to Galois = 1
 i= 1 , 1  match(es) for psi_X of conductor [<"8.1",2>]
-magma -b verbose:= target:=1 psi:=X jobs:=1 < examples/search_gc.m  80.70s user 0.98s system 99% cpu 1:21.69 total
+magma -b target:=1 psi:=X verbose:=1 jobs:=1 < examples/search_gc.m  50.06s user 0.65s system 99% cpu 50.742 total
 ```
 
 

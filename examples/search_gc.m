@@ -34,18 +34,10 @@ if "X" in psi_target then
     if not i in target then continue; end if;
     K := Ks[i];
     c := ConductorBoundRationalHeckeCharacters(K, badps[i]);
-    if verbose ge 1 then "i=", i, ", Conductor bound: for psi_X", fac(c); end if;
+    Sprintf("i=%o Conductor bound: for psi_X with label \"%o\" = %o", i, LMFDBLabel(c), fac(c));
     ef := [<p, euler_factor_X(X, p)> : p in PrimesUpTo(200) | not p in badps[i] and #Factorization(p*Integers(K)) eq Degree(K)];
-    matches := [];
-    for d in Divisors(c) do
-      if verbose ge 2 then "i=", i, "trying d=", fac(d); end if;
-      match := GrossencharacterSearch(d, oo, ef : Jobs:=jobs);
-      //match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs) where psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
-
-      matches cat:= match;
-      if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
-    end for;
-    if verbose ge 1 then "i=", i, ",", #matches, " match(es) for psi_X of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
+    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs);
+    Sprintf("i=%o %o  match(es) for psi_X of conductor %o", i,  #matches, Join([LMFDBLabel(Conductor(elt)) : elt in matches], ", "));
     GCs_X[i] := matches;
   end for;
 end if;
@@ -57,19 +49,11 @@ if "A" in psi_target then
     if not i in target then continue; end if;
     K := Ks[i];
     c := ConductorBoundRationalHeckeCharacters(K, badpsC[i]);
-    if verbose ge 1 then "i=", i, ", Conductor bound: for psi_A", fac(c); end if;
+    Sprintf("i=%o Conductor bound: for psi_A with label \"%o\" = %o", i, LMFDBLabel(c), fac(c));
     badpmodel := PrimeDivisors(Integers()!Discriminant(C));
     ef := [<p, EulerFactor(C, p)> : p in PrimesUpTo(200) | not p in badpmodel and #Factorization(p*Integers(K)) eq Degree(K)];
-    matches := [];
-    for d in Divisors(c) do
-      psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
-      if verbose ge 2 then "i=", i, "trying d=", fac(d); end if;
-      match := GrossencharacterSearch(d, oo, ef : Jobs:=jobs);
-      //match := GrossencharacterSearch(psis, oo, ef : Jobs:=jobs) where psis := RationalHeckeCharacters(HeckeCharacterGroup(d) : UpToGalois:=true);
-      matches cat:= match;
-      if #match gt 0 and verbose ge 2 then "i=", i, "found ", #match, "character(s)"; end if;
-    end for;
-    if verbose ge 1 then "i=", i, ",", #matches, " match(es) for psi_A of conductor", Join([fac(Conductor(elt)) : elt in matches], " "); end if;
+    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs);
+    Sprintf("i=%o %o  match(es) for psi_A of conductor %o", i,  #matches, Join([LMFDBLabel(Conductor(elt)) : elt in matches], ", "));
     GCs_A[i] := matches;
   end for;
 end if;

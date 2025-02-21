@@ -4,11 +4,12 @@ if assigned target then
 else
     target := [1,2,3,4];
 end if;
-if assigned psi then
-  psi_target := [ psi ];
+if assigned verbose then
+  verbose := StringToInteger(verbose);
 else
-  psi_target := [ "A", "X" ];
+  verbose := 0;
 end if;
+SetVerbose("GCSearch", verbose);
 if assigned jobs then
   jobs := StringToInteger(jobs);
 else
@@ -45,7 +46,6 @@ GCs, Ls := function ()
     match := GrossencharacterSearch(c, oo, efPrime[i] : Jobs:=jobs);
     assert #match eq 1;
     // match := GrossencharacterSearch(RationalHeckeCharacters(HeckeCharacterGroup(c) : UpToGalois:=true), oo, efPrime[i] : Jobs:=jobs);
-    assert #match eq 1;
     GCs_prime[i] := match[1];
   end for;
   Lprimes := [LSeries(g : Integral:=true) : g in GCs_prime];
