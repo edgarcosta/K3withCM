@@ -67,27 +67,23 @@ magma -b target:=1 psi:=X verbose:=1 jobs:=1 < examples/search_gc.m  50.06s user
 ### psi_A
 
 ```
-for i in {1..4}; do /usr/bin/time magma -b verbose:=1 target:=$i psi:=A jobs:=512 < examples/search_gc.m ; done
+for i in {1..4}; do time magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m ; done
 Loading "examples/data.m"
-i= 1 , Conductor bound: for psi_A [<"8.1",7>,<"9.1",1>]
-i= 1 , 1  match(es) for psi_A of conductor [<"8.1",4>]
-133.05user 12.83system 0:13.64elapsed 1069%CPU (0avgtext+0avgdata 61072maxresident)k
-0inputs+10448outputs (0major+2070336minor)pagefaults 0swaps
+i=1 Conductor bound: for psi_A with label "18874368.1" = [<"8.1",7>,<"9.1",1>]
+i=1 1  match(es) for psi_A of conductor 4096.1
+magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m  68.36s user 0.50s system 696% cpu 9.886 total
 Loading "examples/data.m"
-i= 2 , Conductor bound: for psi_A [<"8.1",7>,<"49.1",1>]
-i= 2 , 1  match(es) for psi_A of conductor [<"8.1",3>,<"49.1",1>]
-139.95user 13.06system 0:12.40elapsed 1233%CPU (0avgtext+0avgdata 56692maxresident)k
-0inputs+10464outputs (0major+2183451minor)pagefaults 0swaps
+i=2 Conductor bound: for psi_A with label "102760448.1" = [<"8.1",7>,<"49.1",1>]
+i=2 1  match(es) for psi_A of conductor 25088.1
+magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m  56.72s user 0.59s system 636% cpu 9.002 total
 Loading "examples/data.m"
-i= 3 , Conductor bound: for psi_A [<"8.1",7>,<"361.1",1>]
-i= 3 , 1  match(es) for psi_A of conductor [<"8.1",3>,<"361.1",1>]
-398.78user 11.95system 0:17.09elapsed 2402%CPU (0avgtext+0avgdata 43380maxresident)k
-0inputs+10448outputs (0major+2135937minor)pagefaults 0swaps
+i=3 Conductor bound: for psi_A with label "757071872.1" = [<"8.1",7>,<"361.1",1>]
+i=3 1  match(es) for psi_A of conductor 184832.1
+magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m  76.81s user 0.63s system 724% cpu 10.684 total
 Loading "examples/data.m"
-i= 4 , Conductor bound: for psi_A [<"2.1",7>,<"2.2",7>,<"2.3",7>,<"961.1",1>]
-i= 4 , 1  match(es) for psi_A of conductor [<"2.1",4>,<"2.2",4>,<"2.3",4>,<"961.1",1>]
-44415.75user 5718.03system 1:03:39elapsed 1312%CPU (0avgtext+0avgdata 820212maxresident)k
-0inputs+980608outputs (0major+412751930minor)pagefaults 0swaps
+i=4 Conductor bound: for psi_A with label "2015363072.113" = [<"2.1",7>,<"2.2",7>,<"2.3",7>,<"961.1",1>]
+i=4 1  match(es) for psi_A of conductor 3936256.41
+magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m  9692.18s user 44.60s system 1003% cpu 16:10.06 total
 ```
 
 

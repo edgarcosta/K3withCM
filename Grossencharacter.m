@@ -366,6 +366,8 @@ intrinsic CandidateRationalGrossenCharacters(
   return [psi_princ*psi0 : psi0 in psi0s ];
 end intrinsic;
 
+real_time := func<|StringToReal(Split(Time()," ")[2])>;
+user_time := func<|StringToReal(Split(Time()," ")[1])>;
 
 intrinsic GrossencharacterSearch(
   N::RngOrdIdl,
@@ -379,8 +381,11 @@ intrinsic GrossencharacterSearch(
   Permuteoo:=true
   ) -> SeqEnum[GrpHeckeElt]
 { Given a list of }
-  vprintf GCSearch, 3: "%o, %o, %o\n", LMFDBLabel(N), StripWhiteSpace(Sprint(ootype)), euler_factors;
-  vprintf GCSearch, 3: "%o, %o, %o %o\n", UpToGalois, Primitive, Jobs, Permuteoo;
+  Nlabel := LMFDBLabel(N);
+  oolabel := StripWhiteSpace(Sprint(ootype));
+  label := Join([Nlabel, oolabel], " ");
+  vprintf GCSearch, 3: "N=%o, ootype=%o, euler_factors=%o\n", Nlabel, oolabel, euler_factors;
+  vprintf GCSearch, 3: "UpToGalois=%o, Primitive=%o, Jobs=%o Permuteoo=%o\n", UpToGalois, Primitive, Jobs, Permuteoo;
   ensure_field(NumberField(Order(N)));
   has_ParallelCall, ParallelCall := IsIntrinsic("ParallelCall");
   ooall := Permuteoo select possible_infinity_types(ootype) else [ootype];
@@ -413,29 +418,35 @@ intrinsic GrossencharacterSearch(
     gcs := &cat [[Grossencharacter(HeckeCharacterGroup(inputs[i,1])!x[1], DirichletGroup(inputs[i,1])!x[2], x[3]) : x in elt[2,1]] : i->elt in out];
     assert &and [match_psi(psi) : psi in gcs];
 
-    vprintf GCSearch, 2: "global #matches = %o\n", #gcs;
+    vprintf GCSearch, 2: "%o: global #matches = %o\n", label, #gcs;
     if UpToGalois then
       signatures := [GaloisSignatureRational(g) : g in gcs ];
       gcs := [gcs[i] : i in {Index(signatures, sig) : sig in signatures}];
-      vprintf GCSearch, 2: "global #matches up to Galois = %o\n", #gcs;
+      vprintf GCSearch, 2: "%o: global #matches up to Galois = %o\n", label, #gcs;
     end if;
     return gcs;
   end if;
 
 
-  vprintf GCSearch, 2: "Assembling candidates list...";
-  vtime GCSearch, 2:
+  vprintf GCSearch, 2: "%o: Assembling candidates list...\n", label;
+  r := real_time(); u := user_time();
   psis := &cat[ CandidateRationalGrossenCharacters(N, oo : Primitive:=true) : oo in ooall, N in Ns];
-  vprintf GCSearch, 2: "#psis = %o\n", #psis;
+  u:= user_time() - u; r := real_time() - r;
+  q := r gt 0 select u/r else "NaN";
+  vprintf GCSearch, 2: "%o: %.2o (u) %.2o (r) %.2o (cpu) #psis = %o\n", label, u, r, q, #psis;
 
 
+  vprintf GCSearch, 2: "%o: Matching and integrality...\n", label;
   // filter by match and integrality
+  r := real_time(); u := user_time();
   gcs := [psi : i->psi in psis | match_psi(psi) and EulerFactorsIntegralityCheck(psi, PrimesUpTo(B))];
-  vprintf GCSearch, 2: "#matches = %o\n", #gcs;
+  u:= user_time() - u; r := real_time() - r;
+  q := r gt 0 select u/r else "NaN";
+  vprintf GCSearch, 2: "%o: %.2o (u) %.2o (r) %.2o (cpu) #matches = %o\n", label, u, r, q, #gcs;
   if UpToGalois then
     signatures := [GaloisSignatureRational(g) : g in gcs ];
     gcs := [gcs[i] : i in {Index(signatures, sig) : sig in signatures}];
-    vprintf GCSearch, 2: "#matches up to Galois = %o\n", #gcs;
+    vprintf GCSearch, 2: "%o: #matches up to Galois = %o\n", label, #gcs;
   end if;
   return gcs;
 end intrinsic;
