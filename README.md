@@ -89,3 +89,16 @@ magma -b target:=$i psi:=A jobs:=12 < examples/search_gc.m  9692.18s user 44.60s
 
 
 ### psi_X
+
+
+```
+for i in {1..2}; do time magma -b target:=$i psi:=X jobs:=12 < examples/search_gc.m ; done
+Loading "examples/data.m"
+i=1 Conductor bound: for psi_X with label "18874368.1" = [<"8.1",7>,<"9.1",1>]
+i=1 1  match(es) for psi_X of conductor 64.1
+magma -b target:=$i psi:=X jobs:=12 < examples/search_gc.m  61.89s user 0.81s system 328% cpu 19.087 total
+Loading "examples/data.m"
+i=2 Conductor bound: for psi_X with label "102760448.1" = [<"8.1",7>,<"49.1",1>]
+i=2 1  match(es) for psi_X of conductor 3136.1
+magma -b target:=$i psi:=X jobs:=12 < examples/search_gc.m  54.66s user 0.78s system 307% cpu 18.035 total
+```

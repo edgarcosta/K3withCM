@@ -217,17 +217,28 @@ end intrinsic;
 
 
 
-function possible_infinity_types(ootype)
+intrinsic PossibleInfinityTypes(ootype::SeqEnum[SeqEnum[RngIntElt]]) -> SeqEnum[SeqEnum[SeqEnum[RngIntElt]]]
+{ return the possible infinite types }
   // there must be a smarter way to do this
   ootype_to_mset := func<ootype | {* {* x : x in t *} : t in ootype *}>;
   mset := ootype_to_mset(ootype);
   possibilities := ootype;
   possibilities cat:=[[elt[2], elt[1]] : elt in ootype | elt[2] ne elt[1]];
   return { [x : x in elt] : elt in CartesianPower(possibilities, #ootype) | ootype_to_mset(elt) eq mset };
-end function;
+end intrinsic;
 
 
 
+
+/*
+intrinsic EulerFactorsMatchCheck(t::SeqEnum, euler_factors::SeqEnum[Tup])
+{ FIXME }
+  if IsEmpty(t) then return t; end if;
+  euler_factor := ElementType(t) in [Lser, GrpHeckeElt, GrossenChar] select func<o, p : EulerFactor(o, p : Integral:=true)> else EulerFactor;
+  return [obj : obj in t | not exists(notused){ 1 : elt in euler_factors |
+        EulerFactor(obj, p : Integral:=true) ne ef where p, ef := Explode(elt)}];
+end intrinsic;
+*/
 
 
 intrinsic GrossencharacterSearch(
@@ -243,7 +254,7 @@ intrinsic GrossencharacterSearch(
   assert #Set([&+t : t in ootype]) eq 1; // "All oo-type parts must have same weight";
   ensure_field(K);
 
-  ooall := possible_infinity_types(ootype);
+  ooall := PossibleInfinityTypes(ootype);
   vprintf GCSearch, 2: "#psis = %o #ooall = %o\n", #psis, #ooall;
   dirich := AssociativeArray();
   DG:=DirichletGroup(N,[]);
@@ -369,6 +380,35 @@ end intrinsic;
 real_time := func<|StringToReal(Split(Time()," ")[2])>;
 user_time := func<|StringToReal(Split(Time()," ")[1])>;
 
+
+function GetGrossencharacterSearchPipe(N, ootype, ef)
+  pathfn := [Join(s[1..#s-1], "/") where s := Split(fn,"/") where fn := GetFilenames(f)[1,1] :  f in [GrossencharacterSearch, CHIMP]];
+  specfn := [Sprintf("/%o/spec", pathfn[1]), Sprintf("/%o/CHIMP.spec", pathfn[2])];
+  K := NumberField(Order(N));
+  Kseq := Eltseq(DefiningPolynomial(K));
+  efseq:= [Eltseq(elt[2]) : elt in ef];
+  input := StripWhiteSpace(Join([Sprint(elt) : elt in <Kseq, LMFDBLabel(N), ootype, efseq>], ":"));
+  // load spec files
+  cmd := [Sprintf("AttachSpec(\"%o\");", fn) : fn in specfn];
+  // set the input
+  cmd cat:= [Sprintf("input:=\"%o\";", input)];
+  // the core
+  cmd cat:= [
+"
+Ks, label, oos, efs := Explode(Split(input, \":\"));
+K := NumberField(Polynomial(atoii(Ks)));
+oo := atoiii(oos);
+N := LMFDBIdeal(K, label);
+ef:= [Polynomial(elt) : elt in atoiii(efs)];
+ef := [<p, elt> where _, p, _ := IsPower(LeadingCoefficient(elt)) : elt in ef];
+gcs := GrossencharacterSearch(N, oo, ef : UpToGalois:=true, Primitive:=true, Jobs:=1, B:=100, Permuteoo:=false);
+StripWhiteSpace(Sprint(<label, oo, #gcs>));
+exit;
+"
+];
+    return Join(cmd, "\n");
+end function;
+
 intrinsic GrossencharacterSearch(
   N::RngOrdIdl,
   ootype::SeqEnum[SeqEnum[RngIntElt]],
@@ -378,7 +418,8 @@ intrinsic GrossencharacterSearch(
   Primitive:=true,
   Jobs:=1,
   B:=100,
-  Permuteoo:=true
+  Permuteoo:=true,
+  Pipe:=false
   ) -> SeqEnum[GrpHeckeElt]
 { Given a list of }
   Nlabel := LMFDBLabel(N);
@@ -386,9 +427,9 @@ intrinsic GrossencharacterSearch(
   label := Join([Nlabel, oolabel], " ");
   vprintf GCSearch, 3: "N=%o, ootype=%o, euler_factors=%o\n", Nlabel, oolabel, euler_factors;
   vprintf GCSearch, 3: "UpToGalois=%o, Primitive=%o, Jobs=%o Permuteoo=%o\n", UpToGalois, Primitive, Jobs, Permuteoo;
-  ensure_field(NumberField(Order(N)));
-  has_ParallelCall, ParallelCall := IsIntrinsic("ParallelCall");
-  ooall := Permuteoo select possible_infinity_types(ootype) else [ootype];
+  K := NumberField(Order(N));
+  ensure_field(K);
+  ooall := Permuteoo select PossibleInfinityTypes(ootype) else [ootype];
   Ns := Primitive select [N] else Divisors(N);
 
 
@@ -397,19 +438,31 @@ intrinsic GrossencharacterSearch(
         EulerFactor(psi, p : Integral:=true) ne ef where p, ef := Explode(elt)};
   end function;
 
+  if Jobs gt 1 then
+    // prioritize large conductor
+    norms := [-Norm(elt) : elt in Ns];
+    ParallelSort(~norms, ~Ns);
+    inputs := [<N, oo> : oo in ooall, N in Ns];
+    // there is some CPU affinity issue with the ParallelCall approach
+    // on a machine with 256 cores I do not manage to get more than 13 cores to be used
+    // so we better filter the inputs before hand
+    if Pipe then
+      cmds := [GetGrossencharacterSearchPipe(d, oo, euler_factors) : oo in PossibleInfinityTypes(ootype), d in Divisors(N)];
+      execs := ["magma -b" : _ in cmds];
+      out := ParallelPipe(Jobs, execs, cmds);
+      res := [* eval elt : elt in out *];
+      inputs := [<LMFDBIdeal(K, elt[1]), elt[2]> : elt in res | elt[3] ge 1];
+    end if;
 
-  if has_ParallelCall and Jobs gt 1 then
+
     // fill up cache, so we can make consistent choices, and thus serialize the elements
-    for I in Ns do
+    for I in {elt[1] : elt in inputs} do
       _ := DirichletGroup(I);
       _ := HeckeCharacterGroup(I);
       _ := initialise_grossenideal(I);
     end for;
 
-    norms := [-Norm(elt) : elt in Ns];
-    ParallelSort(~norms, ~Ns);
     nopermute := func<N, oo | [<Eltseq(Parent(psi)`ambient!psi) : psi in [* g`hecke, g`dirich *]> cat <g`type> : g in GrossencharacterSearch(N, oo, euler_factors : UpToGalois:=UpToGalois, Jobs:=1, Primitive:=true, B:=B, Permuteoo:=false)]>;
-    inputs := [<N, oo> : oo in ooall, N in Ns];
     // The function block is necessary to prevent Magma from getting confused when forking
     out := function()
       return ParallelCall(Jobs, nopermute, inputs, 1);

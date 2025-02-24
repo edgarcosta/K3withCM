@@ -18,6 +18,8 @@ else
   jobs := 12;
 end if;
 
+pipe:= jobs gt 12;
+
 if assigned verbose then
   verbose := StringToInteger(verbose);
 else
@@ -36,7 +38,7 @@ if "X" in psi_target then
     c := ConductorBoundRationalHeckeCharacters(K, badps[i]);
     Sprintf("i=%o Conductor bound: for psi_X with label \"%o\" = %o", i, LMFDBLabel(c), fac(c));
     ef := [<p, euler_factor_X(X, p)> : p in PrimesUpTo(200) | not p in badps[i] and #Factorization(p*Integers(K)) eq Degree(K)];
-    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs);
+    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs, Pipe:=pipe);
     Sprintf("i=%o %o  match(es) for psi_X of conductor %o", i,  #matches, Join([LMFDBLabel(Conductor(elt)) : elt in matches], ", "));
     GCs_X[i] := matches;
   end for;
@@ -52,7 +54,7 @@ if "A" in psi_target then
     Sprintf("i=%o Conductor bound: for psi_A with label \"%o\" = %o", i, LMFDBLabel(c), fac(c));
     badpmodel := PrimeDivisors(Integers()!Discriminant(C));
     ef := [<p, EulerFactor(C, p)> : p in PrimesUpTo(200) | not p in badpmodel and #Factorization(p*Integers(K)) eq Degree(K)];
-    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs);
+    matches := GrossencharacterSearch(c, oo, ef : Primitive:=false, Jobs:=jobs, Pipe:=pipe);
     Sprintf("i=%o %o  match(es) for psi_A of conductor %o", i,  #matches, Join([LMFDBLabel(Conductor(elt)) : elt in matches], ", "));
     GCs_A[i] := matches;
   end for;
