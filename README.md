@@ -101,4 +101,14 @@ Loading "examples/data.m"
 i=2 Conductor bound: for psi_X with label "102760448.1" = [<"8.1",7>,<"49.1",1>]
 i=2 1  match(es) for psi_X of conductor 3136.1
 magma -b target:=$i psi:=X jobs:=12 < examples/search_gc.m  54.66s user 0.78s system 307% cpu 18.035 total
+
+
+# on a different machine
+time magma -b target:=3 psi:=X jobs:=512 < examples/search_gc.m
+i=3 Conductor bound: for psi_X with label "157790721460674756608.45" = [<"8.1",7>,<"49.1",1>,<"49.2",1>,<"49.3",1>,<"121.1",1>,<"121.2",1>,<"121.3",1>,<"361.1",1>]
+i=3 1  match(es) for psi_X of conductor 23104.1
+
+real    106m41.505s
+user    11142m56.536s
+sys     28m10.660s
 ```
