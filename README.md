@@ -1,6 +1,6 @@
 # K3withCM
 
-This depends on several utilities available in [CHIMP](https://github.com/edgarcosta/CHIMP) (e.g., `NumberFieldExtra` and `AlgebraizeMatrixExtra`), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
+This depends on several utilities available in [CHIMP](https://github.com/edgarcosta/CHIMP) (e.g., `NumberFieldExtra` and `AlgebraizeMatrixExtra` from [edgarcosta/endomorphisms](https://github.com/edgarcosta/endomorphisms/) and `ParallelPipe` [edgarcosta/parallel.magma](https://github.com/edgarcosta/parallel.magma/)), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
 
 The timings are performed on a Apple M4 Pro CPU.
 
