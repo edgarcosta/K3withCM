@@ -421,7 +421,10 @@ intrinsic GrossencharacterSearch(
   Permuteoo:=true,
   Pipe:=false
   ) -> SeqEnum[GrpHeckeElt]
-{ Given a list of }
+{
+  Given a sequence of euler factors <p, Lp> search for all the primitive Grossencharacters of a given oo-type (up to permutation) with conductor N.
+  One may expand/restrict the search by not searching up to Galois action, not permuting the oo-type, or considering nonprimitive characters.
+  }
   Nlabel := LMFDBLabel(N);
   oolabel := StripWhiteSpace(Sprint(ootype));
   label := Join([Nlabel, oolabel], " ");

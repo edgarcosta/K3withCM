@@ -1,6 +1,8 @@
 # K3withCM
 
-This depends on several utils available in [CHIMP](https://github.com/edgarcosta/CHIMP), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
+This depends on several utilities available in [CHIMP](https://github.com/edgarcosta/CHIMP) (e.g., `NumberFieldExtra` and `AlgebraizeMatrixExtra`), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
+
+The timings are performed on a Apple M4 Pro CPU.
 
 # Constructing the quasi-characters and associated L-functions
 
@@ -104,6 +106,7 @@ magma -b target:=$i psi:=X jobs:=12 < examples/search_gc.m  54.66s user 0.78s sy
 
 
 # on a different machine
+# with AMD EPYC 9754 1 (512) @ 2.250GHz
 time magma -b target:=3 psi:=X jobs:=512 < examples/search_gc.m
 i=3 Conductor bound: for psi_X with label "157790721460674756608.45" = [<"8.1",7>,<"49.1",1>,<"49.2",1>,<"49.3",1>,<"121.1",1>,<"121.2",1>,<"121.3",1>,<"361.1",1>]
 i=3 1  match(es) for psi_X of conductor 23104.1
