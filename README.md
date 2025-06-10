@@ -1,8 +1,15 @@
 # K3withCM
 
-This depends on several utilities available in [CHIMP](https://github.com/edgarcosta/CHIMP) (e.g., `NumberFieldExtra` and `AlgebraizeMatrixExtra` from [edgarcosta/endomorphisms](https://github.com/edgarcosta/endomorphisms/) and `ParallelPipe` [edgarcosta/parallel.magma](https://github.com/edgarcosta/parallel.magma/)), which in examples below I am assuming that is loaded at startup via the environment variable `MAGMA_USER_SPEC`.
+In examples below we assume [CHIMP](https://github.com/edgarcosta/CHIMP) that is loaded at startup via the environment variable `MAGMA_USER_SPEC`, 
+as this depends on several utilities provided by [CHIMP](https://github.com/edgarcosta/CHIMP):
+- `NumberFieldExtra` and `AlgebraizeMatrixExtra` from [edgarcosta/endomorphisms](https://github.com/edgarcosta/endomorphisms/)
+- `ParallelPipe` [edgarcosta/parallel.magma](https://github.com/edgarcosta/parallel.magma/))
 
-The timings are performed on a Apple M4 Pro CPU.
+
+
+The timings are performed on a Apple M4 Pro CPU, with a single exception noted.
+
+The Magma version used was Magma V2.28-18.
 
 # Constructing the quasi-characters and associated L-functions
 
